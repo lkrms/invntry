@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.17)
 # Database: invntry
-# Generation Time: 2014-05-29 05:30:09 +0000
+# Generation Time: 2014-05-30 02:55:05 +0000
 # ************************************************************
 
 
@@ -25,20 +25,26 @@
 
 CREATE TABLE `asset` (
   `asset_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `asset_type` int(11) NOT NULL,
+  `asset_type` int(11) unsigned NOT NULL,
   `asset_tag1` varchar(20) DEFAULT NULL,
   `asset_tag2` varchar(20) DEFAULT NULL,
   `serial_number` varchar(200) DEFAULT NULL,
   `desc` varchar(100) DEFAULT NULL,
   `long_desc` text,
-  `make_id` int(11) DEFAULT NULL,
-  `model_id` int(11) DEFAULT NULL,
+  `make_id` int(11) unsigned DEFAULT NULL,
+  `model_id` int(11) unsigned DEFAULT NULL,
   `is_assignable` char(1) NOT NULL DEFAULT 'N',
   `purchase_date` date DEFAULT NULL,
   `purchase_value` decimal(11,2) DEFAULT NULL,
   `sale_date` date DEFAULT NULL,
   `sale_value` decimal(11,2) DEFAULT NULL,
-  PRIMARY KEY (`asset_id`)
+  PRIMARY KEY (`asset_id`),
+  KEY `idx_asset_asset_type` (`asset_type`),
+  KEY `idx_asset_make_id` (`make_id`),
+  KEY `idx_asset_model_id` (`model_id`),
+  CONSTRAINT `fk_asset_model_id` FOREIGN KEY (`model_id`) REFERENCES `ref_asset_model` (`model_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_asset_asset_type` FOREIGN KEY (`asset_type`) REFERENCES `ref_asset_type` (`type_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_asset_make_id` FOREIGN KEY (`make_id`) REFERENCES `ref_asset_make` (`make_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -48,11 +54,14 @@ CREATE TABLE `asset` (
 
 CREATE TABLE `asset_assignment` (
   `line_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `asset_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `asset_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`line_id`)
+  PRIMARY KEY (`line_id`),
+  KEY `idx_asset_assignment_asset_id` (`asset_id`),
+  KEY `idx_asset_assignment_user_id` (`user_id`),
+  CONSTRAINT `fk_asset_assignment_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -63,15 +72,18 @@ CREATE TABLE `asset_assignment` (
 CREATE TABLE `asset_incident` (
   `incident_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ticket_id` varchar(100) DEFAULT NULL,
-  `asset_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
+  `asset_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned DEFAULT NULL,
   `desc` text NOT NULL,
   `open_time` datetime NOT NULL,
   `close_time` datetime DEFAULT NULL,
   `old_serial_number` varchar(200) DEFAULT NULL,
   `repair_cost` decimal(11,2) NOT NULL DEFAULT '0.00',
   `user_pays_repair` char(1) NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`incident_id`)
+  PRIMARY KEY (`incident_id`),
+  KEY `idx_asset_incident_asset_id` (`asset_id`),
+  KEY `idx_asset_incident_user_id` (`user_id`),
+  CONSTRAINT `fk_asset_incident_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -81,9 +93,12 @@ CREATE TABLE `asset_incident` (
 
 CREATE TABLE `asset_mac` (
   `line_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `asset_id` int(11) NOT NULL,
+  `asset_id` int(11) unsigned NOT NULL,
   `mac_address` char(17) NOT NULL DEFAULT '',
-  PRIMARY KEY (`line_id`)
+  PRIMARY KEY (`line_id`),
+  UNIQUE KEY `idx_asset_mac_mac_address` (`mac_address`),
+  KEY `idx_asset_mac_asset_id` (`asset_id`),
+  CONSTRAINT `fk_asset_mac_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
