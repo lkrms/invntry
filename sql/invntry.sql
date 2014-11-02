@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: 127.0.0.1 (MySQL 5.6.17)
+# Host: localhost (MySQL 5.6.21)
 # Database: invntry
-# Generation Time: 2014-05-30 02:55:05 +0000
+# Generation Time: 2014-11-02 23:28:02 +0000
 # ************************************************************
 
 
@@ -42,9 +42,9 @@ CREATE TABLE `asset` (
   KEY `idx_asset_asset_type` (`asset_type`),
   KEY `idx_asset_make_id` (`make_id`),
   KEY `idx_asset_model_id` (`model_id`),
-  CONSTRAINT `fk_asset_model_id` FOREIGN KEY (`model_id`) REFERENCES `ref_asset_model` (`model_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_asset_asset_type` FOREIGN KEY (`asset_type`) REFERENCES `ref_asset_type` (`type_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_asset_make_id` FOREIGN KEY (`make_id`) REFERENCES `ref_asset_make` (`make_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_asset_make_id` FOREIGN KEY (`make_id`) REFERENCES `ref_asset_make` (`make_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_asset_model_id` FOREIGN KEY (`model_id`) REFERENCES `ref_asset_model` (`model_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -61,7 +61,8 @@ CREATE TABLE `asset_assignment` (
   PRIMARY KEY (`line_id`),
   KEY `idx_asset_assignment_asset_id` (`asset_id`),
   KEY `idx_asset_assignment_user_id` (`user_id`),
-  CONSTRAINT `fk_asset_assignment_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_asset_assignment_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_asset_assignment_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -83,7 +84,8 @@ CREATE TABLE `asset_incident` (
   PRIMARY KEY (`incident_id`),
   KEY `idx_asset_incident_asset_id` (`asset_id`),
   KEY `idx_asset_incident_user_id` (`user_id`),
-  CONSTRAINT `fk_asset_incident_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_asset_incident_asset_id` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`asset_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_asset_incident_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -95,6 +97,7 @@ CREATE TABLE `asset_mac` (
   `line_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `asset_id` int(11) unsigned NOT NULL,
   `mac_address` char(17) NOT NULL DEFAULT '',
+  `is_wifi` char(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`line_id`),
   UNIQUE KEY `idx_asset_mac_mac_address` (`mac_address`),
   KEY `idx_asset_mac_asset_id` (`asset_id`),
@@ -134,6 +137,39 @@ CREATE TABLE `ref_asset_type` (
   `type_name` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table user
+# ------------------------------------------------------------
+
+CREATE TABLE `user` (
+  `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `source_id` int(11) unsigned DEFAULT NULL,
+  `guid` varchar(36) DEFAULT NULL,
+  `username` varchar(200) NOT NULL,
+  `first_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
+  `email` varchar(200) DEFAULT NULL,
+  `can_login` char(1) NOT NULL DEFAULT 'N',
+  `last_sync` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `idx_user_username` (`username`),
+  KEY `idx_source_id` (`source_id`),
+  CONSTRAINT `fk_user_source_id` FOREIGN KEY (`source_id`) REFERENCES `user_source` (`source_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user_source
+# ------------------------------------------------------------
+
+CREATE TABLE `user_source` (
+  `source_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `desc` varchar(100) NOT NULL DEFAULT '',
+  `long_desc` text,
+  PRIMARY KEY (`source_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
