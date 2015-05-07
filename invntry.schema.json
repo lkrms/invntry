@@ -84,6 +84,42 @@
                 }
             ]
         }, {
+            "name": "device",
+            "columns":
+            [
+                {
+                    "name": "asset",
+                    "type": "object",
+                    "objectType": "asset",
+                    "objectStorageColumns":
+                    [
+                        "asset_id"
+                    ],
+                    "required": true,
+                    "primaryKey": true
+                }, {
+                    "name": "ethernet_mac",
+                    "phpName": "EthernetMAC",
+                    "type": "varchar",
+                    "size": 17
+                }, {
+                    "name": "wifi_mac",
+                    "phpName": "WiFiMAC",
+                    "type": "varchar",
+                    "size": 17
+                }, {
+                    "name": "ethernet_ip",
+                    "phpName": "EthernetIPv4Address",
+                    "type": "varchar",
+                    "size": 15
+                }, {
+                    "name": "wifi_ip",
+                    "phpName": "WiFiIPv4Address",
+                    "type": "varchar",
+                    "size": 15
+                }
+            ]
+        }, {
             "name": "asset_type",
             "columns":
             [
@@ -98,6 +134,11 @@
                     "type": "varchar",
                     "size": 20,
                     "required": true
+                }, {
+                    "name": "is_device",
+                    "type": "boolean",
+                    "required": true,
+                    "defaultValue": false
                 }
             ],
             "indexes":
