@@ -29,4 +29,10 @@ define("JJ_DB_PREFIX", "");
 // timezone to use if no user-specific timezone is set
 define("JJ_DEFAULT_TIMEZONE", "Australia/Sydney");
 
+// schemas, class maps
+$JJ_SCHEMAS    = array( array(APP_ROOT . "/invntry.schema.json", null));
+$JJ_CLASS_MAP  = array("inv" => APP_ROOT . "/classes");
+
+// PRETTY_NESTED_ARRAYS,0
+
 ?>
