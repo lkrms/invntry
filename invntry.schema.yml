@@ -1,0 +1,270 @@
+---
+name: org.lkrms.invntry
+namespace: inv
+tablePrefix: inv_
+tables:
+- name: asset
+  columns:
+  - name: id
+    type: bigint
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: type
+    type: object
+    objectType: asset_type
+    objectStorageColumns:
+    - asset_type_id
+    required: true
+  - name: tag1
+    type: varchar
+    size: 20
+  - name: tag2
+    type: varchar
+    size: 20
+  - name: serial_number
+    type: varchar
+    size: 200
+  - name: desc
+    phpName: Description
+    type: varchar
+    size: 100
+  - name: long_desc
+    phpName: LongDescription
+    type: text
+  - name: make
+    type: object
+    objectType: asset_make
+    objectStorageColumns:
+    - make_id
+  - name: model
+    type: object
+    objectType: asset_model
+    objectStorageColumns:
+    - model_id
+  - name: is_assignable
+    type: boolean
+    required: true
+    defaultValue: false
+  - name: purchase_date
+    type: datetime
+  - name: purchase_value
+    type: decimal
+    size: 11
+    scale: 2
+  - name: sale_date
+    type: datetime
+  - name: sale_value
+    type: decimal
+    size: 11
+    scale: 2
+- name: device
+  columns:
+  - name: asset
+    type: object
+    objectType: asset
+    objectStorageColumns:
+    - asset_id
+    required: true
+    primaryKey: true
+  - name: ethernet_mac
+    phpName: EthernetMAC
+    type: varchar
+    size: 17
+  - name: wifi_mac
+    phpName: WiFiMAC
+    type: varchar
+    size: 17
+  - name: ethernet_ip
+    phpName: EthernetIPv4Address
+    type: varchar
+    size: 15
+  - name: wifi_ip
+    phpName: WiFiIPv4Address
+    type: varchar
+    size: 15
+- name: asset_type
+  columns:
+  - name: id
+    type: int
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: name
+    type: varchar
+    size: 20
+    required: true
+  - name: is_device
+    type: boolean
+    required: true
+    defaultValue: false
+  indexes:
+  - name: asset_type_name
+    columns:
+    - name
+    unique: true
+- name: asset_make
+  columns:
+  - name: id
+    type: int
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: name
+    type: varchar
+    size: 40
+    required: true
+  indexes:
+  - name: asset_make_name
+    columns:
+    - name
+    unique: true
+- name: asset_model
+  columns:
+  - name: id
+    type: int
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: make
+    type: object
+    objectType: asset_make
+    objectStorageColumns:
+    - make_id
+    required: true
+  - name: name
+    type: varchar
+    size: 40
+    required: true
+  indexes:
+  - name: asset_model_name
+    columns:
+    - make
+    - name
+    unique: true
+- name: asset_assignment
+  columns:
+  - name: id
+    type: bigint
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: asset
+    type: object
+    objectType: asset
+    objectStorageColumns:
+    - asset_id
+    required: true
+  - name: user
+    type: object
+    objectType: user
+    objectStorageColumns:
+    - user_id
+    required: true
+  - name: start_time
+    type: datetime
+    required: true
+  - name: end_time
+    type: datetime
+- name: asset_incident
+  columns:
+  - name: id
+    type: bigint
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: ticket_id
+    type: varchar
+    size: 100
+  - name: asset
+    type: object
+    objectType: asset
+    objectStorageColumns:
+    - asset_id
+    required: true
+  - name: user
+    type: object
+    objectType: user
+    objectStorageColumns:
+    - user_id
+  - name: desc
+    phpName: Description
+    type: text
+  - name: open_time
+    type: datetime
+    required: true
+  - name: close_time
+    type: datetime
+  - name: replaced_serial_number
+    type: varchar
+    size: 200
+  - name: repair_cost
+    type: decimal
+    size: 11
+    scale: 2
+  - name: billable_cost
+    type: decimal
+    size: 11
+    scale: 2
+  - name: user_pays_repair
+    type: boolean
+    defaultValue: false
+    required: true
+  - name: repair_paid
+    type: boolean
+    defaultValue: false
+    required: true
+- name: user
+  columns:
+  - name: id
+    type: bigint
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: source
+    type: object
+    objectType: user_source
+    objectStorageColumns:
+    - source_id
+  - name: guid
+    type: varchar
+    size: 36
+  - name: core_user
+    type: object
+    objectType: org.lkrms.juju.core.user
+    objectStorageColumns:
+    - core_username
+  - name: first_name
+    type: varchar
+    size: 50
+    required: true
+  - name: last_name
+    type: varchar
+    size: 50
+    required: true
+  - name: email
+    type: varchar
+    size: 200
+  - name: last_sync
+    type: datetime
+- name: user_source
+  columns:
+  - name: id
+    type: int
+    primaryKey: true
+    autoIncrement: true
+    required: true
+  - name: name
+    type: varchar
+    size: 20
+    required: true
+  - name: desc
+    phpName: Description
+    type: varchar
+    size: 100
+  indexes:
+  - name: user_source_name
+    columns:
+    - name
+    unique: true
+...
