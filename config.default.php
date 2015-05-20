@@ -30,8 +30,8 @@ define("JJ_DB_PREFIX", "");
 define("JJ_DEFAULT_TIMEZONE", "Australia/Sydney");
 
 // schemas, class maps
-$JJ_SCHEMAS    = array( array(APP_ROOT . "/invntry.schema.yml", null));
-$JJ_CLASS_MAP  = array("inv" => APP_ROOT . "/classes");
+$JJ_NAMESPACES  = array("inv" => APP_ROOT . "/classes");
+$JJ_SCHEMAS     = array( array(APP_ROOT . "/invntry.schema.yml", null));
 
 // PRETTY_NESTED_ARRAYS,0
 
