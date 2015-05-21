@@ -48,10 +48,15 @@ tables:
     defaultValue: false
   - name: purchase_date
     type: datetime
+  - name: warranty_expiry_date
+    type: datetime
   - name: purchase_value
     type: decimal
     size: 11
     scale: 2
+  - name: location
+    type: varchar
+    size: 20
   - name: sale_date
     type: datetime
   - name: sale_value
