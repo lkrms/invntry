@@ -15,12 +15,6 @@ foreach (glob(APP_ROOT . "/config/*.php") as $configFile)
     }
 }
 
-// define Juju framework root
-if ( ! defined("JJ_ROOT"))
-{
-    define("JJ_ROOT", realpath(APP_ROOT . "/../juju"));
-}
-
 // load Juju framework
 require_once (JJ_ROOT . "/core.php");
 
