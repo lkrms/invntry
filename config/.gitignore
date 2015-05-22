@@ -1,5 +1,4 @@
 *
 !*.default.*
 !.gitignore
-!app.php
 !README.*
